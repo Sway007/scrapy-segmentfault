@@ -11,7 +11,7 @@ from urllib.parse import urljoin, urlparse
 class SegmentfaultLoginSpider(Spider):
 
     name = 'segmentfault_login'
-    allowed_domains = ['www.segmentfault.com']
+    allowed_domains = ['segmentfault.com']
     url = 'https://segmentfault.com/u/justjavac/about'
 
     url_components = urlparse( url )
@@ -32,7 +32,6 @@ class SegmentfaultLoginSpider(Spider):
         basic_loader.add_xpath('follows_count', '/html/body/div[2]/div/div/div/div[1]/div[2]/div[1]/a/span[2]/text()', re=r'\d+')
         basic_loader.add_xpath('followers_count', '/html/body/div[2]/div/div/div/div[1]/div[2]/div[2]/a/span[2]/text()', re=r'\d+')
         basic_loader.add_xpath('skills', '/html/body/div[2]/div/div/div/div[2]/div[1]/div[2]/div[2]/div/div[2]/ul//text()')
-        # basic_loader.add_xpath('following_link', '/html/body/div[2]/div/div/div/div[1]/div[2]/div[1]/a/@href')
 
         yield basic_loader.load_item()
 
@@ -42,16 +41,17 @@ class SegmentfaultLoginSpider(Spider):
         
         following_link = urljoin(self.domain, following_link)
 
-        Request(following_link, self.parse_following_page, 
+        yield Request(following_link, self.parse_following_page, 
         headers=self.settings['DEFAULT_REQUEST_HEADERS'], 
         cookies=self.settings['COOKIES'])    
 
     def parse_following_page(self, response):
         
         following_users_sels = response.xpath('/html/body/div[2]/div/div/div/div[2]/ul[2]')
-        links = following_users_sels.xpath('.//a/@href')
+        links = following_users_sels.xpath('.//a/@href').extract()
         links = [urljoin(self.domain, link + '/about') for link in links]
-        for link in links
+
+        for link in links:
             yield Request(link, self.parse_profile_page,
             headers=self.settings['DEFAULT_REQUEST_HEADERS'], 
             cookies=self.settings['COOKIES'])
