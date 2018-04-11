@@ -1,0 +1,6 @@
+*.html
+*.pyc
+__pycache__/
+.vscode/
+.DS_Store
+.git/
