@@ -47,3 +47,10 @@ class user_info(scrapy.Item):
     open_sources = scrapy.Field(            # 开源项目＆著作
         # output_processor = combine_opensources()
     )
+    
+class article_info(scrapy.Item):
+
+    user_id = scrapy.Field()
+    doc_title = scrapy.Field(output_processor=TakeFirst())
+    tags = scrapy.Field()
+    count = scrapy.Field(output_processor=TakeFirst())         # 赞数

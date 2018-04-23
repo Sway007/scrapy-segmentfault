@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from scrapy import Spider, Request
 from scrapy.loader import ItemLoader
-from segmentfault.items import user_basic_info_item, tag1, tag2, user_info
+from segmentfault.items import user_basic_info_item, tag1, tag2, user_info, article_info
 from scrapy.loader.processors import MapCompose, Compose, TakeFirst
 
 from urllib.parse import urljoin, urlparse
@@ -98,9 +98,11 @@ class SegmentfaultLoginSpider(Spider):
 
 
     def parse_profile_page(self, response):
-        # input('test!!!!!! url: ' + response.url)
+       
+        user_id = response.meta.get('user_id')
+
         user_info_loader = customItemLoader(item=user_info(), response=response)
-        user_info_loader.add_value('user_id', response.meta.get('user_id'))
+        user_info_loader.add_value('user_id', user_id)
         user_info_loader.add_css('user_name', 'div.profile div.container h2.profile__heading--name::text').re(u'\w+')
         user_info_loader.add_css('medal_count_gold', 'header div.profile__heading--award div.profile__heading--award-badge span:nth-child(2)::text')
         user_info_loader.add_css('medal_count_silver', 'header div.profile__heading--award div.profile__heading--award-badge span:nth-child(4)::text')
@@ -109,34 +111,76 @@ class SegmentfaultLoginSpider(Spider):
         user_info_loader.add_css('occupation', 'header div.profile__heading--other span.profile__heading--other-item span.profile__company::text').re(u'\w+')
         user_info_loader.add_css('followers_count', 'div.profile div.row div.col-md-2 div.profile__heading-info.row div.col-md-6.col-xs-6:nth-child(2) span.h5::text')
         user_info_loader.add_css('skills', 'div.row div.profile__tech li.tagPopup a.tag::text').re(u'\w+')
-        user_info_loader.add_css('open_sources', '')
+        user_info_loader.add_css('open_sources', 'div.row ul.profile__writing li.profile__writing-item::text')
 
-        # yield basic_loader.load_item()
+        yield user_info_loader.load_item()
+        
+
+        # parse article page
+        tmpResult = user_info_loader.load_item()
+        article_link = response.url + '/articles'
+        yield Request(article_link, self.parse_articles_list_page,
+        headers=self.settings['DEFAULT_REQUEST_HEADERS'], 
+        cookies=self.settings['COOKIES'], meta={'user_id': user_id})
 
 
         # TODO: following page
-        following_link = response.xpath('/html/body/div[2]/div/div/div/div[1]/div[2]/div[1]/a/@href').extract_first()
+        following_link = response.css('div.profile__heading-info.row div.col-md-6.col-xs-6:nth-child(1) a::attr(href)').extract_first()
         
         following_link = urljoin(self.domain, following_link)
 
         yield Request(following_link, self.parse_following_page, 
         headers=self.settings['DEFAULT_REQUEST_HEADERS'], 
-        cookies=self.settings['COOKIES'])    
+        cookies=self.settings['COOKIES'])   
+
+
+    def parse_articles_list_page(self, response):
+        
+        user_id = response.meta.get('user_id')
+
+        article_links = response.css('div.profile div.container ul li div.col-md-7.profile-mine__content--title-warp a::attr(href)').extract()
+        for link in article_links:
+            link = urljoin(self.domain, link)
+            yield Request(link, self.parse_user_article_page, 
+            headers=self.settings['DEFAULT_REQUEST_HEADERS'], 
+            cookies=self.settings['COOKIES'], meta={'user_id': user_id})
+
+        next_page_link = response.css('div.text-center ul.pagination li.next a::attr(href)').extract_first()
+        if next_page_link is not None:
+            next_page_link = urljoin(self.domain, next_page_link)
+            yield Request(next_page_link, self.parse_articles_list_page, 
+            headers=self.settings['DEFAULT_REQUEST_HEADERS'], 
+            cookies=self.settings['COOKIES'], meta={'user_id': user_id})   
+
+
+    def parse_user_article_page(self, response):
+        
+        user_id = response.meta.get('user_id')
+
+        article_item_loader = ItemLoader(item=article_info(), response=response)
+        article_item_loader.add_css('count', 'ul.post-topheader__side.list-unstyled button.btn.btn-success.btn-sm span#sideLikeNum::text')
+        article_item_loader.add_css('doc_title', 'div.post-topheader__info h1#articleTitle a::text')
+        article_item_loader.add_css('tags', 'div.content__tech.blog-type-common.blog-type-1-before li.tagPopup.mb5 a.tag::text').re('\w+')
+
+        yield article_item_loader.load_item()
+
 
     def parse_following_page(self, response):
         
-        following_users_sels = response.xpath('/html/body/div[2]/div/div/div/div[2]/ul[2]')
-        links = following_users_sels.xpath('.//a/@href').extract()
-        links = [urljoin(self.domain, link + '/about') for link in links]
+        following_user_links = response.css('ul.list-unstyled.profile-following__list.profile-following__users li a::attr(href)').extract()
 
-        for link in links:
+        for link in following_user_links:
+            user_id = link.split(sep='/')[-1]
+            link = urljoin(self.domain, link)
+
             yield Request(link, self.parse_profile_page,
             headers=self.settings['DEFAULT_REQUEST_HEADERS'], 
-            cookies=self.settings['COOKIES'])
+            cookies=self.settings['COOKIES'], meta={'user_id': user_id})
 
-        next_page_link = response.xpath('/html/body/div[2]/div/div/div/div[2]/div/ul/li[@class="next"]/a/@href').extract_first()
+        next_page_link = response.css('div.text-center ul.pagination li.next a::attr(href)').extract_first()
         if next_page_link is not None:
-            next_page_link = urljoin(response.url, next_page_link)
+            next_page_link = urljoin(self.domain
+            , next_page_link)
             yield Request(next_page_link, self.parse_following_page,
             headers=self.settings['DEFAULT_REQUEST_HEADERS'], 
             cookies=self.settings['COOKIES'])

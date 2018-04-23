@@ -16,15 +16,25 @@ NEWSPIDER_MODULE = 'segmentfault.spiders'
 
 # add custom settings by sway
 COOKIES = {
-        '_ga': 'GA1.2.1173634495.1510805391', 
-        'PHPSESSID': 'web1~u9ls6dfclhr2qk4b9hlfobtp2j',
-        'last-url': '/',
-        '_gid': 'GA1.2.245177295.1523080522', 
-        'sf_remember': 'e3223b8b1ac21415f1c534835ee8d28a','Hm_lvt_e23800c454aa573c0ccb16b52665ac26': '1523080523,1523080761,1523080813,1523080894',
-        '_gat':1,
-        'io': 'lW4IPrOnjs_L-NEFIRk9', 
-        'Hm_lpvt_e23800c454aa573c0ccb16b52665ac26': '1523104193'
+        # '_ga': 'GA1.2.1173634495.1510805391', 
+        # 'PHPSESSID': 'web1~u9ls6dfclhr2qk4b9hlfobtp2j',
+        # 'last-url': '/',
+        # '_gid': 'GA1.2.245177295.1523080522', 
+        # 'sf_remember': 'e3223b8b1ac21415f1c534835ee8d28a','Hm_lvt_e23800c454aa573c0ccb16b52665ac26': '1523080523,1523080761,1523080813,1523080894',
+        # '_gat':1,
+        # 'io': 'lW4IPrOnjs_L-NEFIRk9', 
+        # 'Hm_lpvt_e23800c454aa573c0ccb16b52665ac26': '1523104193'
+        
+        'PHPSESSID': 'web2~4042dc5996275dd5842c29aa55d0bbfa',
+        'afpCT': 1,
+        'sf_remember': 'a34f977e371a9356ad34599d0ff89e00',
+        '_ga': 'GA1.2.1681073673.1523431190',
+        '_gid': 'GA1.2.1915123657.1524459672',
+        '_gat': 1,
+        'Hm_lvt_e23800c454aa573c0ccb16b52665ac26': '1523431192,1523586387,1524034801,1524459672','Hm_lpvt_e23800c454aa573c0ccb16b52665ac26': '1524490437',
+        'io': '85Msiuz2A9gg89YIKohJ'
     }
+
 
 MONGODB_SERVER_IP = '47.75.87.76'
 MONGODB_DATABASE   = 'segmentfault'
