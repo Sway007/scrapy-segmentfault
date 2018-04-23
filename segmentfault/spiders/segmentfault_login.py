@@ -108,13 +108,8 @@ class SegmentfaultLoginSpider(Spider):
         user_info_loader.add_css('education', 'header div.profile__heading--other span.profile__heading--other-item span.profile__school::text').re(u'\w+')
         user_info_loader.add_css('occupation', 'header div.profile__heading--other span.profile__heading--other-item span.profile__company::text').re(u'\w+')
         user_info_loader.add_css('followers_count', 'div.profile div.row div.col-md-2 div.profile__heading-info.row div.col-md-6.col-xs-6:nth-child(2) span.h5::text')
-
-        # basic_loader.add_xpath('user_name', '/html/body/div[2]/header/div/div/div[2]/h2/text()', re=r'\w+')
-        # basic_loader.add_xpath('major', '/html/body/div[2]/header/div/div/div[2]/div[2]/span[3]/span/text()')
-        # basic_loader.add_xpath('personal_page', '/html/body/div[2]/header/div/div/div[2]/div[2]/span[4]/span/a/@href')
-        # basic_loader.add_xpath('follows_count', '/html/body/div[2]/div/div/div/div[1]/div[2]/div[1]/a/span[2]/text()', re=r'\d+')
-        # basic_loader.add_xpath('followers_count', '/html/body/div[2]/div/div/div/div[1]/div[2]/div[2]/a/span[2]/text()', re=r'\d+')
-        # basic_loader.add_xpath('skills', '/html/body/div[2]/div/div/div/div[2]/div[1]/div[2]/div[2]/div/div[2]/ul//text()')
+        user_info_loader.add_css('skills', 'div.row div.profile__tech li.tagPopup a.tag::text').re(u'\w+')
+        user_info_loader.add_css('open_sources', '')
 
         # yield basic_loader.load_item()
 

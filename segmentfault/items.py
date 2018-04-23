@@ -32,6 +32,7 @@ class tag2(scrapy.Item):
     rank_monthly = scrapy.Field()
     rank_all = scrapy.Field()
 
+
 class user_info(scrapy.Item):
 
     user_id = scrapy.Field()                # 唯一ID
@@ -42,4 +43,7 @@ class user_info(scrapy.Item):
     education = scrapy.Field(output_processor=TakeFirst())
     occupation = scrapy.Field(output_processor=TakeFirst())
     followers_count = scrapy.Field(output_processor=TakeFirst())
-    
+    skills = scrapy.Field()                 # 擅长技能
+    open_sources = scrapy.Field(            # 开源项目＆著作
+        # output_processor = combine_opensources()
+    )
