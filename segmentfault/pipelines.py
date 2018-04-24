@@ -34,7 +34,14 @@ class MongodbPipeline(object):
         self.client.close()
 
     def process_item(self, item, spider):
-        self.db[self.collection].update({'user_id': item['user_id']}, {'$set': dict(item)}, upsert=True)
+        
+        doc_title = item.get('doc_title')
+        if doc_title is None:
+            # persist user info into db
+            self.db[self.collection].update({'user_id': item['user_id']}, {'$set': dict(item)}, upsert=True)
+        else:
+            # persist article info into db
+            self.db[self.collection].update({'user_id': item['user_id']}, {'$push': {'articles': dict(item)}}, upsert=True)
         return item
 
 class JsonPipeline(object):

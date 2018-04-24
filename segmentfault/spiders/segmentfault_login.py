@@ -159,6 +159,8 @@ class SegmentfaultLoginSpider(Spider):
         user_id = response.meta.get('user_id')
 
         article_item_loader = ItemLoader(item=article_info(), response=response)
+        article_item_loader.add_value('user_id', user_id)
+
         article_item_loader.add_css('count', 'ul.post-topheader__side.list-unstyled button.btn.btn-success.btn-sm span#sideLikeNum::text')
         article_item_loader.add_css('doc_title', 'div.post-topheader__info h1#articleTitle a::text')
         article_item_loader.add_css('tags', 'div.content__tech.blog-type-common.blog-type-1-before li.tagPopup.mb5 a.tag::text', re=u'\w+')
