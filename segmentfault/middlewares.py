@@ -6,6 +6,7 @@
 # https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
 from scrapy import signals
+import random
 
 
 class SegmentfaultSpiderMiddleware(object):
@@ -78,7 +79,9 @@ class SegmentfaultDownloaderMiddleware(object):
         # - or return a Request object
         # - or raise IgnoreRequest: process_exception() methods of
         #   installed downloader middleware will be called
-        return None
+        user_agent = random.choice(spider.settings.get('USER_AGENT_POOL'))
+        if user_agent:
+            request.headers.setdefault('User-Agent', user_agent)
 
     def process_response(self, request, response, spider):
         # Called with the response returned from the downloader.
