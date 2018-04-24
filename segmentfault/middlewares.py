@@ -81,6 +81,7 @@ class SegmentfaultDownloaderMiddleware(object):
         #   installed downloader middleware will be called
         user_agent = random.choice(spider.settings.get('USER_AGENT_POOL'))
         if user_agent:
+            # print('!!!!!user-agent: {}\n\n\n'.format(user_agent))
             request.headers.setdefault('User-Agent', user_agent)
 
     def process_response(self, request, response, spider):
