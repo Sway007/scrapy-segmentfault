@@ -34,7 +34,7 @@ class MongodbPipeline(object):
         self.client.close()
 
     def process_item(self, item, spider):
-        self.db[self.collection].update({'user_name': item['user_name']}, {'$set': dict(item)}, upsert=True)
+        self.db[self.collection].update({'user_id': item['user_id']}, {'$set': dict(item)}, upsert=True)
         return item
 
 class JsonPipeline(object):

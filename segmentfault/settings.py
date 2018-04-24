@@ -38,7 +38,8 @@ COOKIES = {
 
 MONGODB_SERVER_IP = '47.75.87.76'
 MONGODB_DATABASE   = 'segmentfault'
-MONGODB_COLLECTION = 'user_baisic_info'
+# MONGODB_COLLECTION = 'user_baisic_info'
+MONGODB_COLLECTION = 'user_info_v2_local'
 
 # DEPTH_LIMIT = 4
 # end 
@@ -51,7 +52,7 @@ MONGODB_COLLECTION = 'user_baisic_info'
 ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS = 1
+CONCURRENT_REQUESTS = 8
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay
@@ -101,7 +102,7 @@ DEFAULT_REQUEST_HEADERS = {
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
 #    'segmentfault.pipelines.JsonPipeline': 200,
-#    'segmentfault.pipelines.MongodbPipeline': 300,
+   'segmentfault.pipelines.MongodbPipeline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

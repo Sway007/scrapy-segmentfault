@@ -37,7 +37,7 @@ class SegmentfaultLoginSpider(Spider):
 
         tag_list_selector = response.css('div.container div.row.tag-list.mt20 div.tag-list__itemWraper')
         for sel in tag_list_selector:
-            tag1_loader = tag1Loader(item=tag1(), selector=sel)
+            tag1_loader = ItemLoader(item=tag1(), selector=sel)
             tag1_loader.add_css('title', 'h3.h5.tag-list__itemheader::text')
             tag1_loader.add_css('links', 'li.tagPopup a.tag::attr(href)')
             tag1_loader.add_css('tag2s', 'li.tagPopup a.tag::attr(data-original-title)')
@@ -101,16 +101,17 @@ class SegmentfaultLoginSpider(Spider):
        
         user_id = response.meta.get('user_id')
 
-        user_info_loader = customItemLoader(item=user_info(), response=response)
+        user_info_loader = ItemLoader(item=user_info(), response=response)
         user_info_loader.add_value('user_id', user_id)
-        user_info_loader.add_css('user_name', 'div.profile div.container h2.profile__heading--name::text').re(u'\w+')
+        
+        user_info_loader.add_css('user_name', 'div.profile div.container h2.profile__heading--name::text', re=u'\w+')
         user_info_loader.add_css('medal_count_gold', 'header div.profile__heading--award div.profile__heading--award-badge span:nth-child(2)::text')
         user_info_loader.add_css('medal_count_silver', 'header div.profile__heading--award div.profile__heading--award-badge span:nth-child(4)::text')
         user_info_loader.add_css('medal_count_bronze', 'header div.profile__heading--award div.profile__heading--award-badge span:nth-child(6)::text')
-        user_info_loader.add_css('education', 'header div.profile__heading--other span.profile__heading--other-item span.profile__school::text').re(u'\w+')
-        user_info_loader.add_css('occupation', 'header div.profile__heading--other span.profile__heading--other-item span.profile__company::text').re(u'\w+')
+        user_info_loader.add_css('education', 'header div.profile__heading--other span.profile__heading--other-item span.profile__school::text', re=u'\w+')
+        user_info_loader.add_css('occupation', 'header div.profile__heading--other span.profile__heading--other-item span.profile__company::text', re=u'\w+')
         user_info_loader.add_css('followers_count', 'div.profile div.row div.col-md-2 div.profile__heading-info.row div.col-md-6.col-xs-6:nth-child(2) span.h5::text')
-        user_info_loader.add_css('skills', 'div.row div.profile__tech li.tagPopup a.tag::text').re(u'\w+')
+        user_info_loader.add_css('skills', 'div.row div.profile__tech li.tagPopup a.tag::text', re=u'\w+')
         user_info_loader.add_css('open_sources', 'div.row ul.profile__writing li.profile__writing-item::text')
 
         yield user_info_loader.load_item()
@@ -160,7 +161,7 @@ class SegmentfaultLoginSpider(Spider):
         article_item_loader = ItemLoader(item=article_info(), response=response)
         article_item_loader.add_css('count', 'ul.post-topheader__side.list-unstyled button.btn.btn-success.btn-sm span#sideLikeNum::text')
         article_item_loader.add_css('doc_title', 'div.post-topheader__info h1#articleTitle a::text')
-        article_item_loader.add_css('tags', 'div.content__tech.blog-type-common.blog-type-1-before li.tagPopup.mb5 a.tag::text').re('\w+')
+        article_item_loader.add_css('tags', 'div.content__tech.blog-type-common.blog-type-1-before li.tagPopup.mb5 a.tag::text', re=u'\w+')
 
         yield article_item_loader.load_item()
 
@@ -192,6 +193,6 @@ class customItemLoader(ItemLoader):
     major_in = MapCompose(str.strip)
     skills_in = MapCompose(str.rstrip, str.strip)
    
-class tag1Loader(ItemLoader):
+# class tag1Loader(ItemLoader):
 
-    pass
+#     pass
