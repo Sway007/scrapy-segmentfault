@@ -47,6 +47,7 @@ class user_info(scrapy.Item):
     open_sources = scrapy.Field(            # 开源项目＆著作
         # output_processor = combine_opensources()
     )
+    skills_points_dic = scrapy.Field()      # 技能分数
     
 class article_info(scrapy.Item):
 

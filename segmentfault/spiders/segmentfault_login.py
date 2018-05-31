@@ -114,6 +114,15 @@ class SegmentfaultLoginSpider(Spider):
         user_info_loader.add_css('skills', 'div.row div.profile__tech li.tagPopup a.tag::text', re=u'\w+')
         user_info_loader.add_css('open_sources', 'div.row ul.profile__writing li.profile__writing-item::text')
 
+        skills_points_sel = response.css('div.profile div.col-md-7 div.panel-body canvas.profile__tags-chart').extract_first()
+        total_point = skills_points_sel.css('canvas::attr(data-total-rank)').extract_first()
+        json_obj = jons.loads(skills_points_sel.css('canvas::attr(data-list-of-tag)').extract_first())
+        skills_points_value = {}
+        skills_points_value['total_point'] = int(total_point)
+        skills_points_value['skill_points'] = json_obj
+        user_info_loader.add_value('skills_points_dic', skills_points_value)
+
+
         yield user_info_loader.load_item()
         
 
