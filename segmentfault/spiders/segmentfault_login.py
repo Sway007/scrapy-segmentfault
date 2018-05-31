@@ -116,7 +116,7 @@ class SegmentfaultLoginSpider(Spider):
 
         skills_points_sel = response.css('div.profile div.col-md-7 div.panel-body canvas.profile__tags-chart')
         total_point = skills_points_sel.css('canvas::attr(data-total-rank)').extract_first()
-        json_obj = jons.loads(skills_points_sel.css('canvas::attr(data-list-of-tag)').extract_first())
+        json_obj = json.loads(skills_points_sel.css('canvas::attr(data-list-of-tag)').extract_first())
         skills_points_value = {}
         skills_points_value['total_point'] = int(total_point)
         skills_points_value['skill_points'] = json_obj
